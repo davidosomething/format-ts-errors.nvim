@@ -4,9 +4,7 @@ Make tsserver LSP errors a little nicer looking
 
 ![screenshot][screenshot]
 
-## Installation
-
-Something like this function as the diagnostic handler for tsserver
+# Installation
 
 ```lua
 local lspconfig = require("lspconfig")
@@ -50,4 +48,4 @@ lspconfig.tsserver.setup({
 }))
 ```
 
-[screenshot]: https://raw.githubusercontent.com/davidosomething/dotfiles/8fa3d6a738ed39ff2b8ba7a5d9126b59d895b538/meta/terminal-potatopro.png
+[screenshot]: 
