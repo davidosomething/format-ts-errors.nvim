@@ -4,7 +4,17 @@ Make tsserver LSP errors a little nicer looking
 
 ![screenshot][screenshot]
 
-# Installation
+## Installation
+
+**Lazy.nvim** add:
+
+```lua
+{
+    "davidosomething/format-ts-errors.nvim"
+}
+```
+
+Then in the lsp setup:
 
 ```lua
 local lspconfig = require("lspconfig")
@@ -48,4 +58,4 @@ lspconfig.tsserver.setup({
 }))
 ```
 
-[screenshot]: 
+[screenshot]: https://raw.githubusercontent.com/davidosomething/format-ts-errors.nvim/meta/screenshot.png
