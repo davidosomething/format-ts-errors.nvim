@@ -2,7 +2,10 @@
 
 Make tsserver LSP errors a little nicer looking
 
-![screenshot][screenshot]
+## screenshots
+
+![screenshot 1][screenshot]
+![screenshot 2][screenshot2]
 
 ## Installation
 
@@ -59,3 +62,4 @@ lspconfig.tsserver.setup({
 ```
 
 [screenshot]: https://raw.githubusercontent.com/davidosomething/format-ts-errors.nvim/meta/screenshot.png
+[screenshot2]: https://raw.githubusercontent.com/davidosomething/format-ts-errors.nvim/meta/screenshot-2.png
