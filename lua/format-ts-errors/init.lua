@@ -117,6 +117,11 @@ M[2739] = function(msg)
   return M.format_lines(msg, { "missing_named_properties" })
 end
 
+M[2740] = function(msg)
+  -- Type '{}' is missing the following properties from type 'LinkTokenCreateRequest': client_name, language, country_codes, user
+  return M.format_lines(msg, { "missing_named_properties" })
+end
+
 M[2741] = function(msg)
   -- @TODO format this like 2345
   -- Property 'first' is missing in type '{}' but required in type 'Deep'.
