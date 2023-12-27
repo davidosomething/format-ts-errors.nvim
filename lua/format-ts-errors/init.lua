@@ -143,4 +143,10 @@ M[2741] = function(msg)
   return msg
 end
 
+M[7053] = function(msg)
+  -- Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'.
+  -- No index signature with a parameter of type 'string' was found on type '{ "ask.shop_visit_hour_2": string; "ask.shop_visit_hour_1": string; "ask.shop_visit_day_1": string; "ask.shop_visit_day_2": string; "ask.tel": string; "ask.contact_hour": string; "ask.method": string; ... 5 more ...; "ask.shop_id": string; }'.
+  return M.format_lines(msg, { "threepat", "twopat" })
+end
+
 return M
