@@ -58,7 +58,7 @@ lspconfig.tsserver.setup({
       )
     end,
   },
-}))
+})
 ```
 
 [screenshot]: https://raw.githubusercontent.com/davidosomething/format-ts-errors.nvim/meta/screenshot.png
