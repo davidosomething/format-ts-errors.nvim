@@ -106,6 +106,11 @@ M[2322] = function(msg)
   return M.format_lines(msg, { "twopat" })
 end
 
+M[2353] = function(msg)
+  -- Object literal may only specify known properties, and 'third' does not exist in type '{ second: { str: string; int: number; }; }'.
+  return M.format_lines(msg, { "twopat" })
+end
+
 M[2345] = function(msg)
   -- Property 'public_token' is missing in type '{}' but required in type 'ItemPublicTokenExchangeRequest'.
   -- Argument of type '{}' is not assignable to parameter of type 'ItemPublicTokenExchangeRequest'.
