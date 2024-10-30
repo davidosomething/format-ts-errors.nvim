@@ -1,6 +1,9 @@
 # format-ts-errors.nvim
 
-Make tsserver LSP errors a little nicer looking
+Make `ts_ls` (the TypeScript LSP) errors a little nicer looking by formatting
+objects.
+
+This plugin favors composability and direct API access over doing it for you.
 
 ## screenshots
 

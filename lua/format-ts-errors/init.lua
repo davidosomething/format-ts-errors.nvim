@@ -1,5 +1,28 @@
-local M = {}
+---@class Settings
+---@field add_markdown boolean add markdown ticks before and after formatted objects
+---@field start_indent_level integer how many indents in front of formatted object
 
+---@type Settings
+local DEFAULTS = {
+  add_markdown = false,
+  start_indent_level = 1,
+}
+
+local M = {
+  ---@type Settings
+  _settings = DEFAULTS,
+}
+
+M.setup = function(opts)
+  M._settings = vim.tbl_extend("force", DEFAULTS, opts or {})
+end
+
+---@param o string e.g. {someinlinebrackets;likethis;}
+---@return string # return indented pretty type def, e.g.:
+--- {
+---   someinlinebrackets;
+---   likethis;
+--- }
 M.format_object_type = function(o)
   o = vim.fn.substitute(o, "; ", ";", "g")
   o = vim.fn.substitute(o, ";", ";\n", "g")
@@ -7,8 +30,8 @@ M.format_object_type = function(o)
 
   -- indent
   o = vim.fn.split(o, "\n")
-  local obj = ""
-  local level = 1
+  local lines = {}
+  local level = M._settings.start_indent_level
   for _, line in ipairs(o) do
     -- just a closing, unindent this iteration
     if not line:find("{") and line:find("}") then
@@ -16,14 +39,20 @@ M.format_object_type = function(o)
     end
 
     local spaces = ("  "):rep(level)
-    obj = obj .. spaces .. line .. "\n"
+    table.insert(lines, spaces .. line)
 
     -- just an opening, indent next iteration
     if line:find("{") and not line:find("}") then
       level = level + 1
     end
   end
-  return obj
+
+  local formatted = table.concat(lines, "\n")
+
+  if M._settings.add_markdown then
+    return ("%s\n%s\n%s"):format("```ts", formatted, "```")
+  end
+  return formatted
 end
 
 M.line_parsers = {
