@@ -50,7 +50,7 @@ M.format_object_type = function(o)
   local formatted = table.concat(lines, "\n")
 
   if M._settings.add_markdown then
-    return ("%s\n%s\n%s"):format("```ts", formatted, "```")
+    return ("%s\n%s\n%s\n"):format("```ts", formatted, "```")
   end
   return formatted
 end
