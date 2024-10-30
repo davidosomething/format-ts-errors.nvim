@@ -20,6 +20,20 @@ This plugin favors composability and direct API access over doing it for you.
 }
 ```
 
+You can configure the output with a setup function, e.g.:
+
+````lua
+{
+    "davidosomething/format-ts-errors.nvim",
+    config = function()
+      require("format-ts-errors").setup({
+        add_markdown = true, -- wrap output with markdown ```ts ``` markers
+        start_indent_level = 0, -- initial indent
+      })
+    end,
+}
+````
+
 Then in the lsp setup:
 
 ```lua
