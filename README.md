@@ -80,6 +80,8 @@ lspconfig.tsserver.setup({
 
 ### Config options
 
+#### start_indent_level
+
 ```lua
 start_indent_level = 0
 ```
@@ -91,6 +93,8 @@ Will yield:
 some code (not indented)
 ```
 ````
+
+Whereas 1:
 
 ```lua
 start_indent_level = 1
