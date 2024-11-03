@@ -72,7 +72,8 @@ M.line_parsers = {
     return ""
   end,
 
-  -- Argument of type '{}' is not assignable to parameter of type 'ItemPublicTokenExchangeRequest'.
+  -- 1. Argument of type '{}' is not assignable to parameter of type 'ItemPublicTokenExchangeRequest'.
+  -- 2. Type 'string' is not assignable to type 'undefined'
   twopat = function(line)
     ---@diagnostic disable-next-line: unused-local
     local found, _ei, p1, ours, p2, theirs =
@@ -131,7 +132,8 @@ M.format_lines = function(msg, matchers)
 end
 
 M[2322] = function(msg)
-  -- "Object literal may only specify known properties, and 'third' does not exist in type '{ second: { str: string; int: number; }; }'."
+  -- "Type 'string' is not assignable to type 'undefined'"
+  -- Type '<T extends Record<string, string>>(table: string, calcEngine: string | undefined, tab: string | undefined, predicate: ((row: T) => boolean) | undefined) => Record<string, string>[]' is not assignable to type '<T extends Record<string, string>>(table: string, calcEngine?: string | undefined, tab?: string | undefined, predicate?: ((row: T) => boolean) | undefined) => T[]'.
   return M.format_lines(msg, { "twopat" })
 end
 

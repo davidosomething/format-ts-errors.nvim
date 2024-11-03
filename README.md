@@ -78,5 +78,31 @@ lspconfig.tsserver.setup({
 })
 ```
 
+### Config options
+
+```lua
+start_indent_level = 0
+```
+
+Will yield:
+
+````markdown
+```ts
+some code (not indented)
+```
+````
+
+```lua
+start_indent_level = `
+```
+
+Will yield:
+
+````markdown
+```ts
+  some code (indented)
+```
+````
+
 [screenshot]: https://raw.githubusercontent.com/davidosomething/format-ts-errors.nvim/meta/screenshot.png
 [screenshot2]: https://raw.githubusercontent.com/davidosomething/format-ts-errors.nvim/meta/screenshot-2.png
