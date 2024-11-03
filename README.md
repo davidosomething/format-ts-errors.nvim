@@ -93,7 +93,7 @@ some code (not indented)
 ````
 
 ```lua
-start_indent_level = `
+start_indent_level = 1
 ```
 
 Will yield:
