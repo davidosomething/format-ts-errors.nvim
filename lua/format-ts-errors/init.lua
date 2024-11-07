@@ -18,7 +18,7 @@ M.setup = function(opts)
 end
 
 ---@param o string e.g. {someinlinebrackets;likethis;}
----@return string # return indented pretty type def, e.g.:
+---@return string,string[] # return indented pretty type def, e.g.:
 --- {
 ---   someinlinebrackets;
 ---   likethis;
@@ -50,9 +50,13 @@ M.format_object_type = function(o)
   local formatted = table.concat(lines, "\n")
 
   if M._settings.add_markdown then
-    return ("%s\n%s\n%s\n"):format("```ts", formatted, "```")
+    if #lines == 1 then
+      return ("`%s`\n"):format(formatted), lines
+    end
+    -- ensure fenced code is also surrounded by newlines
+    return ("\n```typescript\n%s\n```\n"):format(formatted), lines
   end
-  return formatted
+  return formatted, lines
 end
 
 M.line_parsers = {
@@ -64,9 +68,9 @@ M.line_parsers = {
       line:find("(%S.-) '(.-)' (.- type) '(.-)' (.- type) '(.-)'.")
     if found then
       return (
-        ("%s\n\n%s\n"):format(p1, M.format_object_type(prop))
-        .. ("%s\n\n%s\n"):format(p2, M.format_object_type(ours))
-        .. ("%s\n\n%s\n"):format(p3, M.format_object_type(theirs))
+        ("%s\n%s"):format(p1, M.format_object_type(prop))
+        .. ("%s\n%s"):format(p2, M.format_object_type(ours))
+        .. ("%s\n%s"):format(p3, M.format_object_type(theirs))
       )
     end
     return ""
@@ -80,8 +84,8 @@ M.line_parsers = {
       line:find("(%S.-) '(.-)' (.- type) '(.-)'.")
     if found then
       return (
-        ("%s\n\n%s\n"):format(p1, M.format_object_type(ours))
-        .. ("%s\n\n%s\n"):format(p2, M.format_object_type(theirs))
+        ("%s\n%s"):format(p1, M.format_object_type(ours))
+        .. ("%s\n%s"):format(p2, M.format_object_type(theirs))
       )
     end
     return ""
@@ -101,8 +105,8 @@ M.line_parsers = {
       end
 
       return (
-        ("%s\n\n%s\n"):format(p1, M.format_object_type(ours))
-        .. ("%s\n\n%s\n"):format(p2, M.format_object_type(theirs))
+        ("%s\n%s"):format(p1, M.format_object_type(ours))
+        .. ("%s\n%s"):format(p2, M.format_object_type(theirs))
         .. missing_keys
       )
     end
@@ -166,13 +170,14 @@ M[2741] = function(msg)
     "Property '(.-)' is missing in type '(.-)' but required in type '(.*)'."
   )
   if needle and a and b then
+    local second, lines2 = M.format_object_type(b)
+    local last = (
+      #lines2 > 1 and "but required in type\n%s" or "but required in type %s"
+    ):format(second)
     return table.concat({
       ("Property '%s' is missing in type"):format(needle),
-      "",
       ("%s"):format(M.format_object_type(a)),
-      "but required in type",
-      "",
-      ("%s"):format(M.format_object_type(b)),
+      last,
     }, "\n")
   end
   return msg
