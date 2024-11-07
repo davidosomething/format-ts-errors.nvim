@@ -166,15 +166,14 @@ M[2741] = function(msg)
     "Property '(.-)' is missing in type '(.-)' but required in type '(.*)'."
   )
   if needle and a and b then
-    return (
-      "Property"
-      .. ("\n\n  %s"):format(needle)
-      .. "\n\nis missing in type"
-      .. ("\n\n%s"):format(M.format_object_type(a))
-      .. "\nbut required in type"
-      .. ("\n\n%s"):format(M.format_object_type(b))
-      .. "\n"
-    )
+    return table.concat({
+      ("Property '%s' is missing in type"):format(needle),
+      "",
+      ("%s"):format(M.format_object_type(a)),
+      "but required in type",
+      "",
+      ("%s"):format(M.format_object_type(b)),
+    }, "\n")
   end
   return msg
 end
