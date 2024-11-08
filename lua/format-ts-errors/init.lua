@@ -49,13 +49,23 @@ M.format_object_type = function(o)
 
   local formatted = table.concat(lines, "\n")
 
-  if M._settings.add_markdown then
-    if #lines == 1 then
+  -- Single item -------------------------------------------------------------
+  if #lines == 1 then
+    -- Surround in backticks, even when no markdown requested
+    if M._settings.add_markdown then
       return ("`%s`\n"):format(formatted), lines
     end
+    -- Surround in single quote like original
+    return ("'%s'\n"):format(formatted), lines
+  end
+
+  -- Multiline ---------------------------------------------------------------
+  -- add markdown fencing?
+  if M._settings.add_markdown then
     -- ensure fenced code is also surrounded by newlines
     return ("\n```typescript\n%s\n```\n"):format(formatted), lines
   end
+  --- don't add markdown fencing
   return formatted, lines
 end
 
