@@ -101,6 +101,28 @@ M.line_parsers = {
     return ""
   end,
 
+  -- Bullet list the missing keys
+  -- Non-abstract class 'PolygonClientHandler' is missing implementations for the following members of 'AbstractKeyedWSHandler<BarsClientMessage, BarChannel, Destroyable>': 'createSubscription', 'parseMessage', 'onParsedMessage'.
+  missing_implementations = function(line)
+    ---@diagnostic disable-next-line: unused-local
+    local found, _pos, before, classname, mid, abstractclassname, types =
+      line:find("(%S.-) '(.-)' (.- of) '(.-)': (.+)")
+    vim.print(types)
+    if found then
+      local missing = ""
+      for _, key in ipairs(vim.fn.split(types, ", ")) do
+        missing = missing .. (" • %s\n"):format(key)
+      end
+
+      return (
+        ("%s\n%s"):format(before, M.format_object_type(classname))
+        .. ("%s\n%s"):format(mid, M.format_object_type(abstractclassname))
+        .. missing
+      )
+    end
+    return ""
+  end,
+
   -- Type '{}' is missing the following properties from type 'LinkTokenCreateRequest': client_name, language, country_codes, user
   missing_named_properties = function(line)
     ---@diagnostic disable-next-line: unused-local
@@ -160,6 +182,11 @@ M[2345] = function(msg)
   -- Property 'public_token' is missing in type '{}' but required in type 'ItemPublicTokenExchangeRequest'.
   -- Argument of type '{}' is not assignable to parameter of type 'ItemPublicTokenExchangeRequest'.
   return M.format_lines(msg, { "threepat", "twopat" })
+end
+
+M[2654] = function(msg)
+  -- Non-abstract class 'PolygonClientHandler' is missing implementations for the following members of 'AbstractKeyedWSHandler<BarsClientMessage, BarChannel, Destroyable>': 'createSubscription', 'parseMessage', 'onParsedMessage'.
+  return M.format_lines(msg, { "missing_implementations" })
 end
 
 M[2739] = function(msg)
