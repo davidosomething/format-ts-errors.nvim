@@ -107,7 +107,6 @@ M.line_parsers = {
     ---@diagnostic disable-next-line: unused-local
     local found, _pos, before, classname, mid, abstractclassname, types =
       line:find("(%S.-) '(.-)' (.- of) '(.-)': (.+)")
-    vim.print(types)
     if found then
       local missing = ""
       for _, key in ipairs(vim.fn.split(types, ", ")) do
