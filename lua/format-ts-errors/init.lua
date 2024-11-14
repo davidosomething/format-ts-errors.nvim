@@ -77,11 +77,16 @@ M.line_parsers = {
     local found, _ei, p1, prop, p2, ours, p3, theirs =
       line:find("(%S.-) '(.-)' (.- type) '(.-)' (.- type) '(.-)'.")
     if found then
-      return (
-        ("%s\n%s"):format(p1, M.format_object_type(prop))
-        .. ("%s\n%s"):format(p2, M.format_object_type(ours))
-        .. ("%s\n%s"):format(p3, M.format_object_type(theirs))
+      local formatted_theirs, lines_theirs = M.format_object_type(theirs)
+      local last = (#lines_theirs > 1 and "%s\n%s" or "%s %s"):format(
+        p3,
+        formatted_theirs
       )
+      return table.concat({
+        ("%s '%s' %s"):format(p1, prop, p2),
+        M.format_object_type(ours),
+        last,
+      }, "\n")
     end
     return ""
   end,
@@ -94,7 +99,7 @@ M.line_parsers = {
       line:find("(%S.-) '(.-)' (.- type) '(.-)'.")
     if found then
       return (
-        ("%s\n%s"):format(p1, M.format_object_type(ours))
+        ("%s\n%s\n"):format(p1, M.format_object_type(ours))
         .. ("%s\n%s"):format(p2, M.format_object_type(theirs))
       )
     end
@@ -146,7 +151,7 @@ M.line_parsers = {
 }
 
 M.format_lines = function(msg, matchers)
-  local result = ""
+  local formatted_lines = {}
   local lines = vim.fn.split(msg, "\n")
   for _, line in ipairs(lines) do
     local matcher_result = ""
@@ -154,16 +159,17 @@ M.format_lines = function(msg, matchers)
       if matcher_result:len() == 0 then
         matcher_result = M.line_parsers[matcher](line)
         if matcher_result:len() > 0 then
-          result = result .. matcher_result
+          table.insert(formatted_lines, matcher_result)
         end
       end
     end
     -- no match, return default
     if matcher_result:len() == 0 then
-      result = result .. line .. "\n"
+      table.insert(formatted_lines, line)
     end
   end
-  return result
+
+  return table.concat(formatted_lines, "\n")
 end
 
 M[2322] = function(msg)
