@@ -83,7 +83,7 @@ M.line_parsers = {
         formatted_theirs
       )
       return table.concat({
-        ("%s '%s' %s"):format(p1, prop, p2),
+        ("%s %s %s"):format(p1, prop, p2),
         M.format_object_type(ours),
         last,
       }, "\n")
@@ -99,7 +99,7 @@ M.line_parsers = {
       line:find("(%S.-) '(.-)' (.- type) '(.-)'.")
     if found then
       return (
-        ("%s\n%s\n"):format(p1, M.format_object_type(ours))
+        ("%s\n%s\n"):format(p1, ours)
         .. ("%s\n%s"):format(p2, M.format_object_type(theirs))
       )
     end
