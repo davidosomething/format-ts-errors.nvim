@@ -127,24 +127,23 @@ M.line_parsers = {
     return ""
   end,
 
+  -- Just like missing_implementations but "type" instead of "of"
   -- Type '{}' is missing the following properties from type 'LinkTokenCreateRequest': client_name, language, country_codes, user
   missing_named_properties = function(line)
     ---@diagnostic disable-next-line: unused-local
-    local found, _ei, p1, ours, p2, theirs =
-      line:find("(%S.-) '(.-)' (.- type) '(.-)'")
+    local found, _pos, before, classname, mid, interface, keys =
+      line:find("(%S.-) '(.-)' (.- type) '(.-)': (.+)")
     if found then
-      ---@diagnostic disable-next-line: unused-local
-      local _sj, _ej, named_csv = line:find(": ([^:]*)$")
-      local missing_keys = ""
-      for _, key in ipairs(vim.fn.split(named_csv, ", ")) do
-        missing_keys = missing_keys .. (" • %s\n"):format(key)
+      local missing = ""
+      for _, key in ipairs(vim.fn.split(keys, ", ")) do
+        missing = missing .. (" • %s\n"):format(key)
       end
 
-      return (
-        ("%s\n%s"):format(p1, M.format_object_type(ours))
-        .. ("%s\n%s"):format(p2, M.format_object_type(theirs))
-        .. missing_keys
-      )
+      return table.concat({
+        ("%s\n%s"):format(before, M.format_object_type(classname)),
+        ("%s\n%s"):format(mid, M.format_object_type(interface)),
+        missing,
+      }, "\n")
     end
     return ""
   end,
