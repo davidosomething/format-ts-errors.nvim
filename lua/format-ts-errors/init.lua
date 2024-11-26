@@ -17,6 +17,25 @@ M.setup = function(opts)
   M._settings = vim.tbl_extend("force", DEFAULTS, opts or {})
 end
 
+-- ===========================================================================
+-- Formatting utils
+-- ===========================================================================
+
+---@param csv string like abc,def,ghi
+---@return string # bulletted list like
+--- • abc
+--- • def
+--- • ghi
+M.bulletted = function(csv)
+  return vim
+    .iter(vim.fn.split(csv, ", "))
+    :map(function(k)
+      return (" • %s"):format(k)
+    end)
+    :totable()
+    .concat("\n")
+end
+
 ---@param o string e.g. {someinlinebrackets;likethis;}
 ---@return string,string[] # return indented pretty type def, e.g.:
 --- {
@@ -69,6 +88,36 @@ M.format_object_type = function(o)
   return formatted, lines
 end
 
+---Given msg, apply matchers and concat results
+---@param msg string
+---@param matchers function[]
+---@return string
+M.format_lines = function(msg, matchers)
+  local formatted_lines = {}
+  local lines = vim.fn.split(msg, "\n")
+  for _, line in ipairs(lines) do
+    local matcher_result = ""
+    for _, matcher in ipairs(matchers) do
+      if matcher_result:len() == 0 then
+        matcher_result = M.line_parsers[matcher](line)
+        if matcher_result:len() > 0 then
+          table.insert(formatted_lines, matcher_result)
+        end
+      end
+    end
+    -- no match, return default
+    if matcher_result:len() == 0 then
+      table.insert(formatted_lines, line)
+    end
+  end
+
+  return table.concat(formatted_lines, "\n")
+end
+
+-- ===========================================================================
+-- Parsers
+-- ===========================================================================
+
 M.line_parsers = {
 
   -- Property 'public_token' is missing in type '{}' but required in type 'ItemPublicTokenExchangeRequest'.
@@ -106,6 +155,7 @@ M.line_parsers = {
     return ""
   end,
 
+  -- Just like missing_named_properties but "of" instead of "type"
   -- Bullet list the missing keys
   -- Non-abstract class 'PolygonClientHandler' is missing implementations for the following members of 'AbstractKeyedWSHandler<BarsClientMessage, BarChannel, Destroyable>': 'createSubscription', 'parseMessage', 'onParsedMessage'.
   missing_implementations = function(line)
@@ -113,16 +163,12 @@ M.line_parsers = {
     local found, _pos, before, classname, mid, abstractclassname, types =
       line:find("(%S.-) '(.-)' (.- of) '(.-)': (.+)")
     if found then
-      local missing = ""
-      for _, key in ipairs(vim.fn.split(types, ", ")) do
-        missing = missing .. (" • %s\n"):format(key)
-      end
-
-      return (
-        ("%s\n%s"):format(before, M.format_object_type(classname))
-        .. ("%s\n%s"):format(mid, M.format_object_type(abstractclassname))
-        .. missing
-      )
+      local missing = M.bulletted(types)
+      return table.concat({
+        ("%s\n%s"):format(before, M.format_object_type(classname)),
+        ("%s\n%s"):format(mid, M.format_object_type(abstractclassname)),
+        missing,
+      }, "\n")
     end
     return ""
   end,
@@ -134,11 +180,7 @@ M.line_parsers = {
     local found, _pos, before, classname, mid, interface, keys =
       line:find("(%S.-) '(.-)' (.- type) '(.-)': (.+)")
     if found then
-      local missing = ""
-      for _, key in ipairs(vim.fn.split(keys, ", ")) do
-        missing = missing .. (" • %s\n"):format(key)
-      end
-
+      local missing = M.bulletted(keys)
       return table.concat({
         ("%s\n%s"):format(before, M.format_object_type(classname)),
         ("%s\n%s"):format(mid, M.format_object_type(interface)),
@@ -148,28 +190,6 @@ M.line_parsers = {
     return ""
   end,
 }
-
-M.format_lines = function(msg, matchers)
-  local formatted_lines = {}
-  local lines = vim.fn.split(msg, "\n")
-  for _, line in ipairs(lines) do
-    local matcher_result = ""
-    for _, matcher in ipairs(matchers) do
-      if matcher_result:len() == 0 then
-        matcher_result = M.line_parsers[matcher](line)
-        if matcher_result:len() > 0 then
-          table.insert(formatted_lines, matcher_result)
-        end
-      end
-    end
-    -- no match, return default
-    if matcher_result:len() == 0 then
-      table.insert(formatted_lines, line)
-    end
-  end
-
-  return table.concat(formatted_lines, "\n")
-end
 
 M[2322] = function(msg)
   -- "Type 'string' is not assignable to type 'undefined'"
