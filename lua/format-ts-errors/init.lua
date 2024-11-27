@@ -27,13 +27,15 @@ end
 --- • def
 --- • ghi
 M.bulletted = function(csv)
-  return vim
-    .iter(vim.fn.split(csv, ", "))
-    :map(function(k)
-      return (" • %s"):format(k)
-    end)
-    :totable()
-    .concat("\n")
+  return table.concat(
+    vim
+      .iter(vim.fn.split(csv, ", "))
+      :map(function(k)
+        return (" • %s"):format(k)
+      end)
+      :totable(),
+    "\n"
+  )
 end
 
 ---@param o string e.g. {someinlinebrackets;likethis;}
