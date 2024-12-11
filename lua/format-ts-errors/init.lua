@@ -92,7 +92,7 @@ end
 
 ---Given msg, apply matchers and concat results
 ---@param msg string
----@param matchers function[]
+---@param matchers string[]
 ---@return string
 M.format_lines = function(msg, matchers)
   local formatted_lines = {}
@@ -196,6 +196,11 @@ M.line_parsers = {
 M[2322] = function(msg)
   -- "Type 'string' is not assignable to type 'undefined'"
   -- Type '<T extends Record<string, string>>(table: string, calcEngine: string | undefined, tab: string | undefined, predicate: ((row: T) => boolean) | undefined) => Record<string, string>[]' is not assignable to type '<T extends Record<string, string>>(table: string, calcEngine?: string | undefined, tab?: string | undefined, predicate?: ((row: T) => boolean) | undefined) => T[]'.
+  return M.format_lines(msg, { "twopat", "missing_named_properties" })
+end
+
+M[2339] = function(msg)
+  --- Property 'SOMETHING' does not exist on type '{ KEY: `${value}/val/val`; KEY2: `${string}/api`; }'.
   return M.format_lines(msg, { "twopat" })
 end
 
