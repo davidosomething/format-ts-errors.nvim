@@ -78,6 +78,10 @@ lspconfig.tsserver.setup({
 })
 ```
 
+Or use it in vim.diagnostic.config({ float = { format = function... } })
+An example can be found in my own dotfiles:
+[https://github.com/davidosomething/dotfiles/commit/ea55d6eb3ba90784f09f9f8652ae3e20a9bdefd7#diff-62fa333ae509823f7ed9ffb0e95acfba597ad6e5644c2a3b72551a6ccc05667dR162-R181]
+
 ### Config options
 
 #### start_indent_level
