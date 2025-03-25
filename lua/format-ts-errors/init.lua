@@ -193,6 +193,10 @@ M.line_parsers = {
   end,
 }
 
+M[1360] = function(msg)
+  return M.format_lines(msg, { "twopat", "threepat" })
+end
+
 M[2322] = function(msg)
   -- "Type 'string' is not assignable to type 'undefined'"
   -- Type '<T extends Record<string, string>>(table: string, calcEngine: string | undefined, tab: string | undefined, predicate: ((row: T) => boolean) | undefined) => Record<string, string>[]' is not assignable to type '<T extends Record<string, string>>(table: string, calcEngine?: string | undefined, tab?: string | undefined, predicate?: ((row: T) => boolean) | undefined) => T[]'.
